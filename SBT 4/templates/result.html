@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>S.B.T.</title>
+	<meta charset="UTF-8">
+	<link rel="stylesheet" href="{{url_for('static',filename='css/result.css')}}">
+</head>
+<body>
+	<section class="sbt">
+		<h2>S.B.T.<br> Surety Bond<br>Trading Platform</h2>
+	</section>
+		<section class="title">
+			<h1>{{ data.company_name | safe}}</h1>
+			<p>{{ data.ateco_description | safe }}</p>
+		</section>
+		{% if data.credit_limit %}
+		<h1>CREDIT LIMIT: € {{ data.credit_limit}}</h1>
+		{% endif %}
+		{% if data.assigned_rating %}
+		<h1>ASSIGNED RATING: {{data.assigned_rating}}</h1>
+		{% endif %}
+		<table class="sub-l">
+			{% if data.sublimits %}
+			<tr>
+				<th>Sub-limits</th>
+				<th>Value in €</th>
+			</tr>
+				{% for sublimit in data.sublimits.values() %}
+				<tr>
+					<td>{{ sublimit.label }}</td>
+					<td>{{ sublimit.value }}</td>
+				</tr>
+				{% endfor %}
+			{% endif %}
+			{% if data.mortgage_data %}
+			{% set count = namespace(value=1) %}
+			 	{% for mortgage in data.mortgage_data %}
+				<tr>
+					<th colspan="2">Building n. {{count.value}}</th>
+				</tr>
+					{% for key,value in mortgage.items() %}
+							<tr>
+								<td>{{ key }}</td>
+								<td>{{ value }}</td>
+							</tr>
+						
+					{% endfor %}
+					{% set count.value = count.value + 1 %}
+				{% endfor %}
+			{% endif %}
+			{% if data.underwriter %}
+			<tr>
+				<th>Suggested Decision Maker</th>
+				<th>Final Risk Score</th>
+			</tr>
+			<tr>
+				<td>{{ data.underwriter }} </td>
+				<td>{{ data.final_score }}</td>
+			</tr>
+			{% endif %}
+		</table>
+		<br>
+		<table id="myTable">
+	  </table>
+	  <script>
+		const data = [{{ data.json_data | safe }}];
+		const table = document.querySelector('#myTable');
+		const outputData = {};
+			for (const item in data[0]) {
+				const labelData = data[0][item];
+				const itemName = labelData[0].label;
+				if (item === 'vat_no' || item === 'credit_limit' || item === 'company_name') {
+					continue;
+				}
+				outputData[itemName] = {};
+				let maxYear = '';
+				let secondMaxYear = '';
+					for (const label of labelData) {
+						const year = label.date.slice(-4);
+						if (year > maxYear) {
+						secondMaxYear = maxYear;
+						maxYear = year;
+						} else if (year > secondMaxYear && year !== maxYear) {
+						secondMaxYear = year;
+						}
+						outputData[itemName][year] = label.value;
+					}
+				// Remove the label data for years other than the two most recent years
+				for (const year in outputData[itemName]) {
+					console.log(outputData[itemName]);
+					if (year !== maxYear && year !== secondMaxYear) {
+					delete outputData[itemName][year];
+					}
+				}
+			}
+			// Print the output in the required format
+			const year1 = Object.keys(outputData[Object.keys(outputData)[0]])[0];
+			const year2 = Object.keys(outputData[Object.keys(outputData)[0]])[1];
+			const headerRow = document.createElement('tr');
+			headerRow.innerHTML = `<th>Main Financial Statements & Key Financial Ratios</th><th>${year1}</th><th>${year2}</th>`;
+			table.appendChild(headerRow);
+			for (const itemName in outputData) {
+				const row = document.createElement('tr');
+				row.innerHTML = `<td>${itemName}</td><td>${outputData[itemName][year1] || ''}</td><td>${outputData[itemName][year2] || ''}</td>`;
+				table.appendChild(row);
+			}
+	  </script>
+</body>
+</html>
+
+	  

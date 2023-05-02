@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>S.B.T.</title>
+	<meta charset="UTF-8">
+	<link rel="stylesheet" href="{{url_for('static',filename='css/index.css')}}">
+</head>
+<section class="title">
+		<h1>S.B.T.<br> Surety Bond<br>Trading Platform</h1>
+</section>
+<body>
+		<section class="quote">
+			<p>"Every opportunity has a different intensity of risks and benefits for different people. <br> Choose the opportunities that fit best in your risk-benefit matrix."</p>
+		</section>
+		<br>
+		<br>
+		<br>
+		<br>
+		<br>
+		<br>
+	</section>
+	<div class="container">
+		{% if error %}
+					<div class="error">
+						<ul class="error-list">
+						{% for key , msg in error.items() %}
+							<li>{{ msg }}</li>
+						{% endfor %}
+						</ul>
+					</div>
+				{% endif %}
+		<form action="/result" method="post" target="_blank">
+		<div class="left-container">
+			<section class="vat">
+				<h2>Obligor Data Section</h2>
+				<p1> To retrieve financial data for the last two balance sheets, please provide the obligor's VAT number in the designated field below. </p1>
+				<br>
+				<br>
+				<br>
+					<label for="insert-text" class="insert-text">Enter VAT number :</label>
+					<input type="text" name="insert-text" id="insert-text" placeholder="Enter VAT number">
+				<br>
+				<br>
+				<br>
+				<br>
+				<br>
+				<br>
+				<br>
+				<br>			
+				<br>
+				<br>
+				<section class="todo">
+					<h3></h3>
+					<p></p>
+					<p></p>
+				</section>
+				<input type="submit" value="Submit">
+				<section class="empty">
+					<h3></h3>
+					<h4></h4>
+					<p></p>
+					<h4></h4>
+					<p></p>
+				</section>
+			</section>
+		</div>
+		<div class="divider"></div>
+		<div class="right-container">
+			<section class="vat">
+				<h2>Bond Information Section</h2>
+				<p1>To ensure that all relevant bond details are captured, please complete the fields provided below<br></p1>
+				<br>
+				<br>
+				<p1 style="font-size: 16px"> Select Bond type   : 
+					<select name="type-of-bond" id="type-of-bond-dropdown">
+						<option value=""  selected>Select bond type</option>
+						<option value="bid bond">Bid Bond</option>
+						<option value="performance bond">Performance Bond</option>
+						<option value="subsidy">Subsidy</option>
+						<option value="general contractor">General Contractor</option>
+						<option value="housing">Housing</option>
+						<option value="other">Other</option>
+					  </select>
+				  </p1>
+				<br>
+				<br>
+					<label for="bond_value" class="insert-text">Enter Bond Value in  :</label>
+					<input type="text" name="bond_value" id="bond_value" placeholder="Enter Bond Value">
+					<br>
+					<br>
+					  <label for="bond_duration" class="insert-text">Enter Bond Duration :</label>
+					  <input type="text" name="bond_duration" id="bond_duration" placeholder="Enter Bond Duration">
+					<br>
+					<br>
+					<br>
+				<br>
+				<br>
+				<br>
+				<br>
+				<h2>Co-Obligor Section</h2>
+				<p1>Please provide the tax code of the co-obligor who guarantees this request in the appropriate field</p1>
+				<br>
+				<br>
+					<label for="tax_code" class="insert-text">Enter TAX Code :</label>
+					<input type="text" name="tax_code" id="tax_code" placeholder="Enter TAX code">
+					<br>
+					<span class="error-msg"></span>
+				<br>
+				<br>			
+				<br>
+				<br>
+				<section class="todo">
+					<h3></h3>
+					<p></p>
+					<p></p>
+				</section>
+				<section class="empty">
+					<h3></h3>
+					<h4></h4>
+					<p></p>
+					<h4></h4>
+					<p></p>
+				</section>
+			</section>
+		</div>
+	</form>
+	</div>
+	<section class="footer">
+	</section>
+</body>
+</html>

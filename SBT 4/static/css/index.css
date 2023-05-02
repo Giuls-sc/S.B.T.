@@ -1,0 +1,214 @@
+div.container {
+	display: flex;
+	justify-content: space-between;
+	align-items: flex-start;
+	width: 100%;
+
+}
+
+div.left-container{
+	width: 50%;
+}
+
+form input[type="submit"] {
+	flex: 0 0 auto;
+}
+  
+.right-container {
+	flex: 1;
+	background-color: #2C2F40;
+	flex-basis: calc(50% - 1px);
+	height: 500px; 
+	
+}
+
+.left-container {
+	margin-right: 3%;
+	
+}
+
+  
+body {
+	margin-left: 10%;
+	margin-right: 10%;
+	background-color:  #2C2F40;
+	color: #fff;
+	height: 100%;
+	font-family: 'Courier New';
+
+}
+
+p1{
+	font-size: 14px;
+
+}
+
+#type-of-bond-dropdown {
+	padding: 5px;
+	font-size: 16px;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+}
+
+  
+#type-of-bond-dropdown option:first-child {
+	display: none;
+}
+
+a {
+	color: #48fb47;
+	text-decoration: none;
+}
+	
+/* Header styles */
+head{
+
+	text-align: center;
+	
+}
+	
+h1 {
+
+	font-size: 28px;
+}
+
+	
+/* Quote section styles */
+.quote {
+	float: left;
+	font-family: 'Courier New';
+}
+
+.quote p{
+
+	color:yellowgreen;
+	font-size: 14px;
+}
+
+/*<section class="vat"*/
+.vat h2{
+	color: orangered;
+
+}
+
+.vat p{
+	color: orange;
+}
+
+
+/* Obligor VAT number styles */
+.obligor-vat:before {
+	content: "Cliente Obligor VAT Number ";
+	color: #fff;
+	font-weight: bold;
+}
+
+section.options{
+	font-weight: bold;
+	color:yellowgreen;
+	
+}	
+/* Start check boxes style  */
+
+.api-options a {
+	background-color: #48fb47;
+	color: #000;
+	padding: 10px 20px;
+	border-radius: 5px;
+}
+
+/* Ends check boxes style  */
+form {
+	display: flex;
+    flex-wrap: nowrap;
+    flex-direction: row;
+}  
+form label {
+	width: 30%;
+	
+	margin-bottom: 10px;
+}  
+form input[type="text"] {
+	flex: 1;
+	margin-right: 10px;
+}  
+
+/*first submit button*/
+form input[type="submit"] {
+	padding: 5px 10px;
+    background-color: #fff;
+    color: #000;
+    border: none;
+	border-radius: 5px;
+    transition: background-color 0.9s ease-in-out;    
+}
+
+form input[type="submit"]:hover {
+    background-color: #000;
+    color: #fff;
+    cursor: pointer;
+}
+/* Ends first submit button*/
+
+/* three check boxes style*/
+.options label {
+	display: flex;
+	align-items: center;
+	position: relative;
+	padding-left: 25px;
+	margin-bottom: 10px;
+	cursor: pointer;
+}
+
+/* flag buttons positioned to the right of the text */
+input[type="checkbox"] {
+	margin-left: 220px;
+	position: absolute;
+	top: 30%;
+	transform: translateY(-50%);
+
+}
+
+/* Starts style last submit button*/
+section.vat button[type="submit"] {
+	margin-left: 400px;
+	background-color: #000002;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    transition: background-color 0.9s ease-in-out;
+}
+
+section.vat button[type="submit"]:hover {
+    background-color: #000;
+    color: #fff;
+    cursor: pointer;
+}
+
+
+.error {
+	background-color: #FF0000;
+	padding: 10px;
+	margin: 10px;
+	color: white;
+  }
+  
+  .error-list {
+	list-style-type: none;
+	padding: 0;
+	margin: 0;
+  }
+  
+  .error-list li {
+	font-size: 16px;
+	margin: 0;
+	padding: 0;
+  }
+
+  .error p {
+	font-size: 16px;
+  }
+/* Endsstyle last submit button*/
+
+

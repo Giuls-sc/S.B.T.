@@ -1,0 +1,73 @@
+
+body {
+  background-color:  #2C2F40;
+  font-family: 'Courier New', Courier, monospace;
+  margin-left : 15%;
+  margin-right : 15%;
+  
+}
+
+h2{
+  font-size: 28px;
+}
+
+.sbt{
+  font-size: 25px;
+  color: white;
+  
+
+}
+
+/* Title section styles */
+.title {
+  color: white;
+}
+
+
+
+h1, P{
+  color:yellowgreen;
+  text-align: center;
+  
+}
+
+
+.title h1 {
+  font-size: 36px;
+  color: yellowgreen;
+  text-align: center;
+}
+
+
+/* Results section styles */
+.results h1 {
+  font-size: 28px;
+  color: white;
+}
+
+.results p {
+  font-size: 16px;
+}
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 0 auto;
+  background-color: #fff;
+}
+
+table1 {
+ 
+  margin: 10%;
+  
+}
+
+th, td {
+  padding: 10px;
+  border: 1px solid #ddd;
+}
+
+th {
+  background-color: #f2f2f2;
+  font-weight: bold;
+}
+
