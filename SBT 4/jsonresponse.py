@@ -51,6 +51,7 @@ def format_label(key):
 
 formatted_data = {}
 
+
 def json_output():
     results = {}
     format_result(data)
@@ -92,6 +93,7 @@ def currency_format(value):
    
     return value 
 
+# Function to calculate sub limits 
 def get_sublimits(credit_limit):
     sublimits = {
         "bid_bond": {
@@ -129,7 +131,7 @@ def get_sublimits(credit_limit):
 
     return sublimits
 
-
+# Helper function to format the ratios, financial statements and string
 def format_result(data):
     for key, value in data.items():
         if isinstance(value, dict):
@@ -154,6 +156,7 @@ def return_ateco_description():
     json_data = json.dumps(ateco_description)
     return json_data
 
+# Function output the person entitled to sign off the insurance, if applicable
 def get_underwriter(adjusted_risk_score):
         underwriting_approach = {
             0 <= adjusted_risk_score <= 20: 'JUNIOR UNDERWRITER',
