@@ -4,7 +4,7 @@ import locale
 from datetime import datetime
 
 # Locate the file path of the file to be read
-file_path_visura = '/Users/giuls/Desktop/SBT 4/download-file-api_visura.txt'
+file_path_visura = '/Users/giuls/Desktop/SBT 4/download-file-api_visura2.txt'
 
 # Defines tag to be used from the file
 tags = {

@@ -3,53 +3,45 @@ from datetime import datetime
 from calculation import *
 from datetime import date
 
-file_path_locator = '/Users/giuls/Desktop/SBT 4/locator.txt'
-tree = ET.parse(file_path_locator)
-root = tree.getroot()
 
 
-# Find the TotalRealEstateUnitBuildingNumber tag and print its value
-def get_number_proprieties():   
+# Function that reads in the locator file and checks for any buildings
+def get_number_proprieties():  
+    file_path_locator = '/Users/giuls/Desktop/SBT 4/locator.txt'
+    tree = ET.parse(file_path_locator)
+    root = tree.getroot()
     n_of_buildings = 0
     for elem in root.iter("TotalRealEstateUnitBuildingNumber"):
         n_of_buildings = int(elem.text)
     return n_of_buildings
-    
 n_of_buildings = get_number_proprieties()
 print(n_of_buildings, "number of buildings in the locator file\n")
 
 
-# Set the path of the XML file
+# Set the path of the XML file. If n. of buildings above, is greater than zero, then extracts building details below
 file_path_gravami = '/Users/giuls/Desktop/SBT 4/plus_gravami.txt'
 tree = ET.parse(file_path_gravami)
 root = tree.getroot()
 
-cadastral_income = []
-mortgage_duraton = 0
-mortgage_value = 0 
 
 # Retrieve cadastral income for each propriety
 def get_cadastral_income():
+    cadastral_income = []
     for unit_building in root.iter('RealEstateUnitBuilding'):
         for cadastral_annuity in unit_building.iter('CadastralAnnuity'):  
             cadastral_income.append(float(cadastral_annuity.text))
     return cadastral_income
-cadsatral_income = get_cadastral_income()
-print(cadastral_income, "cadastral_income#Í")
+cadas_income = get_cadastral_income()
+print(cadas_income, "cadastral_income#Í")
 
 
 note_list = root.find('.//NoteList')
 mortgage = "IP.VOL.X CONC.MUTUO GAR.MUTUO FONDIARIO"
-
 debt_descriptions = []
-
-real_charge = []
-mortgage_start_date = []
-count = 0 
-
 
 # Chec if there are any active mortgages on proprieties 
 def get_mortgage_info():
+    mortgage_start_date = []
     for i, unit_building in enumerate(root.iter('RealEstateUnitBuilding')):
         for note_list in unit_building.iter('NoteList'):
             for note in note_list.iter('Note'):
@@ -69,12 +61,9 @@ def get_mortgage_info():
 mortgage_start_date = get_mortgage_info()
 print(mortgage_start_date, " mortgages start date")
 
-
-
-years_mortgage = []
-mortgage_value = []
-
+# Function that extracts the mortgae duration in years
 def get_years_mortgage():
+    years_mortgage = []
     for i, office_list in enumerate(root.iter('TerritoryOfficeList')):
         for duration in office_list.iter('DurationYears'):
             years_mortgage.append(int(duration.text))
@@ -84,8 +73,9 @@ def get_years_mortgage():
 years_mortgage = get_years_mortgage()
 print(years_mortgage, "years mortgage")
 
-
+# Function that extracts the mortgage value in floating point number - value Euro
 def get_mortgage_value():
+    mortgage_value = []
     for i, office_list in enumerate(root.iter('TerritoryOfficeList')):
         for amount in office_list.iter('PrincipalAmountEur'):
             mortgage_value.append(float(amount.text))
@@ -95,9 +85,10 @@ def get_mortgage_value():
 mortgage_value = get_mortgage_value()
 print(mortgage_value, "mortgage value")
 
-real_charge = []
-percentage_ownership  = []
+# Function that extracts the percentage of ownership for each building/propriety
 def get_percentage_ownership_buildings():
+    real_charge = []
+    percentage_ownership  = []
     for owner_list in root.iter('OwnerList'):
         for numerator in owner_list.iter('RealChargeNumerator'):
             real_charge.append(int(numerator.text))
@@ -116,17 +107,13 @@ def get_percentage_ownership_buildings():
         percentage_ownership.append(fraction)
     return percentage_ownership
 percentage_ownership = get_percentage_ownership_buildings()
-
 print(percentage_ownership, "percentage ownership")
-print(debt_descriptions, "debt_description")
 print(mortgage_value, "mortage_value" )
 
 
-tax_authority_coefficent= 170
-residual_dbt = []
-
-
+#Function that takes in as parameter the value extracted above ti calculate the security adjusted value for each propriety owned by the co-obligor - TAX Code check
 def calculate_restriction_value(cadastral_income, percentage_ownership, mortage_value, years_mortgage, note_dates):
+    tax_authority_coefficent= 170
     restriction_value = []
     # Calculate the security adjusted value
     security_adjusted_value = [round((cadastral_annuity * tax_authority_coefficent), 2)  for cadastral_annuity in cadastral_income]
@@ -142,8 +129,7 @@ def calculate_restriction_value(cadastral_income, percentage_ownership, mortage_
     residual_debt = [ round( mortgage_residual_years * annual_debt, 2)for mortgage_residual_years, annual_debt in zip(mortgage_residual_years, annual_debt) ]
     restriction_value = [ (sec_val - res_debt  ) * ownership for sec_val, res_debt, ownership in zip(security_adjusted_value, residual_debt, percentage_ownership)]
     return restriction_value
-
-restriction_value = calculate_restriction_value(cadastral_income, percentage_ownership, mortgage_value, years_mortgage, mortgage_start_date) 
+restriction_value = calculate_restriction_value(cadas_income, percentage_ownership, mortgage_value, years_mortgage, mortgage_start_date) 
 
 
 

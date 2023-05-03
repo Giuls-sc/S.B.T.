@@ -17,7 +17,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 engine = db.create_engine(db_string, engine_opts={'pool_recycle': 3600})
 
-# This function communicate from backnd to databse to calculates the adjusted risk of a quotation based on the bond type, bond value, and bond duration storeed in the db. Function
+# This function communicate from backnd to databse to calculates the adjusted risk of a quotation based on the txt input bond type, bond value, and bond duration and retrieves the corrective factors stored in the db. Function
 # render_template() pushes the data to the result.html page in the front-end
 def get_adjusted_result(bond_type,bond_value,months):
     #If not bond has been specified, return zero
@@ -74,7 +74,7 @@ def get_adjusted_result(bond_type,bond_value,months):
         return adjusted_result
 
 
-# This function communicate between backend and frontend. Stores the txt input variable from the fron-end saves it in dictionary data
+# This function communicate between backend and frontend. Stores the txt input variable from the front-end and saves it in dictionary data
 @app.route('/result', methods=['GET','POST'])
 def result():
     if request.method == "GET":
@@ -170,7 +170,7 @@ def result():
         if request.form.get('insert-text') is None or request.form.get('bond_value') is None or request.form.get('bond_duration') is None or request.form.get('type-of-bond') is None or request.form.get('tax_code') is None:
             error['empty_fields'] = 'Please Fill-in all fields'
             return redirect(url_for('index', error=error))
-        # Return the result template with the data
+        # Return the result template with the data object
         return render_template('result.html', data=data)
     else:
         # If tax code is not entered, return error message

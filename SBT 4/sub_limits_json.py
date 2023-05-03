@@ -6,6 +6,7 @@ data = main_data
 
 # Import function
 AZ_manufacturing = AZ_score_manufactruing(main_data)
+print(AZ_manufacturing,"AZ_manufacturing")
 
 
 # This function calculates the assigne rating based on the result of the AZ_Score() function
@@ -105,7 +106,7 @@ def get_credit_limit(experience_factor, assigned_rating, data=main_data):
     #Import acid_test() function 
     acid_test = calculate_acid_test(data)
     acid_test = float(list(acid_test.values())[0])
-    # checks tota value of productioj and shareholders equity are in data  {} dictionary 
+    # checks total value of production and shareholders equity are in data  {} dictionary and extracts them to use values in the calculations
     if 'totale_valore_produzione' in data and 'patrimonio_netto' in data :
         valore_produzione_1 = float(list(data['totale_valore_produzione'].values())[0])       
         valore_produzione_2 = float(list(data['totale_valore_produzione'].values())[1])
@@ -136,7 +137,6 @@ def get_credit_limit(experience_factor, assigned_rating, data=main_data):
             credit_limit = valore_produzione_1 * 0.025
         else:
             return 0
-    # retur credit limit
     return credit_limit
 
 

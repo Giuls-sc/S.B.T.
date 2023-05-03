@@ -7,7 +7,6 @@ from calculation_two import *
 from Building_check import *
 from sub_limits_json import *
 
-
 tags_types = {
     'patrimonio_netto' : 'currency',
     'totale_crediti' : 'currency',
@@ -16,8 +15,7 @@ tags_types = {
     'rimanenze' : 'currency',
     'debiti_esigibili_entro_esercizio' : 'currency',
     'totale_valore_produzione' : 'currency',
-    'valore_produzione_altri_ricavi_proventi_totale_altri_ricavi_proventi' : 'float',
-    'totale_passivo' : 'currency',
+    'valore_produzione_altri_ricavi_proventi_totale_altri_ricavi_proventi' : 'currency',
     'utile_perdita' : 'currency',
     'totale_attivo_circolante' : 'currency',
     'EBIT' : 'currency',
@@ -27,16 +25,25 @@ tags_types = {
     'capitale_sociale' : 'currency',
     'interest_ratios' : 'float',
     'ROI_ratios' : 'float',
-    'valore_produzione_altri_ricavi' : 'float',
+    'valore_produzione_altri_ricavi' : 'currency',
     'turnover_impegni_ratios': 'float',
     'AZ_manufacturing' : 'float',
     'AZ_Not_manufacturing' : 'float',
-    'financial_laverage' : 'float',
+    #'totale_passivo' : 'currency',
     'assigned_rating' : 'str',
     'Credit_limit' : 'currency',
     'company_name' : 'str',
     'anno' : 'str',
     'acid_test' :  'float',
+    'differenziale_dilazioni_ratio': 'float',
+    'giorni_dilazione_clienti': 'float',
+    'giorni_dilazione_fornitori': 'float',
+    'giacenza_magazzino_ratios': 'float',
+    'current_ratios' : 'float',
+    'financial_laverage' : 'float',
+    'turnover_magazzino_ratios ': 'float',
+    'ROE_ratio': 'float',
+    'acid_test' :'float'
 }
 
 def format_label(key):

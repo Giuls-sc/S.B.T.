@@ -15,7 +15,7 @@ tags = {
     'debiti_esigibili_entro_esercizio': 'DebitiEsigibiliEntroEsercizioSuccessivo',
     'totale_valore_produzione': 'TotaleValoreProduzione',
     'valore_produzione_altri_ricavi': 'ValoreProduzioneAltriRicaviProventiTotaleAltriRicaviProventi',
-    'totale_passivo': 'TotalePassivo',                       
+    #'totale_passivo': 'TotalePassivo',                       
     'utile_perdita': 'UtilePerditaEsercizio',
     'totale_attivo_circolante': 'TotaleAttivoCircolante',    
     # Liquid Assets C22
@@ -30,6 +30,8 @@ tags = {
     'company_name': 'DatiAnagraficiDenominazione',
     #'anno': 'DatiAnagraficiSede'
 }
+
+
 # Helper function to extract financvial data from the XML file . takes in two argments
 def get_financial_data(tags, file_path):
     with open(file_path, 'r') as file:
@@ -71,20 +73,17 @@ def AZ_score_manufactruing(data):
                     and 'patrimonio_netto' in data and context_ref in data['patrimonio_netto'] \
                     and 'capitale_sociale' in data and context_ref in data['capitale_sociale'] \
                     and 'EBIT' in data and context_ref in data['EBIT'] :
-                AZ_M_fomrula =  (1.5 *( float(data['rimanenze'][context_ref]) + float(data['crediti_esigibili_entro_esercizio'][context_ref]) - 
-                                       float(data['debiti_esigibili_entro_esercizio'][context_ref]) + float(data['totale_attivo_circolante'][context_ref])/
-                                       float(data['totale_attivo'][context_ref]) )+ 1.44* ((float(data['patrimonio_netto'][context_ref]) - 
-                                       float(data['capitale_sociale'][context_ref]) ) / float(data['totale_attivo'][context_ref])) + 3.64 * (float(data['EBIT'][context_ref]) / float(data['totale_attivo'][context_ref])) + 0.7 * (float(data['patrimonio_netto'][context_ref]) / float(data['totale_debiti'][context_ref])) + 0.64 * second_value)
+                AZ_M_fomrula =  1.5 * (float(data['rimanenze'][context_ref]) + float(data['crediti_esigibili_entro_esercizio'][context_ref]) - float(data['debiti_esigibili_entro_esercizio'][context_ref]) + float(data['totale_attivo_circolante'][context_ref]) ) / float(data['totale_attivo'][context_ref]) + 1.44* (float(data['patrimonio_netto'][context_ref]) -  float(data['capitale_sociale'][context_ref]) ) / float(data['totale_attivo'][context_ref]) + 3.64 * float(data['EBIT'][context_ref]) / float(data['totale_attivo'][context_ref]) + 0.7 * float(data['patrimonio_netto'][context_ref]) / float(data['totale_debiti'][context_ref]) + 0.64 * second_value
                 AZ_manufacturing[context_ref] = AZ_M_fomrula
         data['AZ_manufacturing'] = AZ_manufacturing 
         return AZ_manufacturing
     else:
         print("Error: totale_attivo or  totale_debiti tag, in AZ_score_manufactruing, not found or has no value")
-    
-
+        
+# Function that calculate     
 def AZ_score_Not_manufactruing(data):
+    AZ_Not_manufacturing = {}
     if 'totale_attivo'in data and data['totale_attivo'] and 'totale_debiti'in data and data['totale_debiti'] != 0:
-        AZ_Not_manufacturing = {}
         for context_ref in data['totale_attivo_circolante']:
             if 'rimanenze' in data and context_ref in data['rimanenze'] \
                     and 'crediti_esigibili_entro_esercizio' in data and context_ref in data['crediti_esigibili_entro_esercizio'] \
@@ -128,13 +127,29 @@ def calculate_current_ratios(data):
             if 'crediti_esigibili_entro_esercizio' in data and context_ref in data['crediti_esigibili_entro_esercizio'] \
                     and 'disponibilita_liquide' in data and context_ref in data['disponibilita_liquide'] \
                     and 'rimanenze' in data and context_ref in data['rimanenze']:
-                current_ratio = (data['crediti_esigibili_entro_esercizio'][context_ref] + 
-                                 data['disponibilita_liquide'][context_ref] + 
-                                 data['rimanenze'][context_ref]) / data['debiti_esigibili_entro_esercizio'][context_ref]            
-                current_ratios[context_ref] = current_ratio
+                curre_ratio_formula = (float(data['crediti_esigibili_entro_esercizio'][context_ref]) + 
+                                 float(data['disponibilita_liquide'][context_ref]) + 
+                                 float(data['rimanenze'][context_ref])) / float(data['debiti_esigibili_entro_esercizio'][context_ref])       
+                current_ratios[context_ref] = curre_ratio_formula
         data['current_ratios'] = current_ratios
+        return current_ratios
     else:
         print("Error: DebitiEsigibiliEntroEsercizioSuccessivo tag, calculate_current_ratios, not found or has no value")
+
+# Calculate ROI
+def calculate_ROI(data):
+    if 'totale_attivo_circolante' in data and data['totale_attivo_circolante'] != 0:
+        ROI_ratios = {}
+        for context_ref in data['totale_attivo_circolante']:
+            if 'EBIT' in data and context_ref in data['EBIT']\
+                    and 'totale_attivo_circolante' in data and context_ref in data['totale_attivo_circolante'] :
+                r_o_i = (float(data['EBIT'][context_ref]) / 
+                        float(data['totale_attivo_circolante'][context_ref]))
+                ROI_ratios[context_ref] = r_o_i 
+        data['ROI_ratios'] = ROI_ratios 
+        return ROI_ratios
+    else:
+        print("Error: totale_attivo_circolante tag, in calculate_ROI, not found or has no value")
 
 # Calculate Giorni Dilazione clienti (C25/C15) * 365
 def giorni_dilazione_clienti_ratio(data):
@@ -148,9 +163,10 @@ def giorni_dilazione_clienti_ratio(data):
                 giorni_dc  = (data['totale_crediti'][context_ref] )# data['totale_valore_produzione'][context_ref]) * 365
                 giorni_dilazione_clienti[context_ref] = giorni_dc
                 data['giorni_dilazione_clienti'] = giorni_dilazione_clienti
+                return giorni_dilazione_clienti
             else:
                 print("Error: TotaleCrediti tag, in giorni_dilazione_clienti_ratio, not found or has no value")
-    return giorni_dilazione_clienti
+    
 
 # Calculate Giorni Dilazione Fornitori 
 def giorni_dilazione_fornitori_ratio(data):   #(C21+C15) * 365 = (DebitiFornitori / TotaleValoreProduzione) * 365
@@ -162,23 +178,11 @@ def giorni_dilazione_fornitori_ratio(data):   #(C21+C15) * 365 = (DebitiFornitor
                 giorni_df  = (data['totale_valore_produzione'][context_ref]) #/ data['totale_valore_produzione'][context_ref]) * 365 # data['totale_valore_produzione'][context_ref]) * 365
                 giorni_dilazione_fornitori[context_ref] = giorni_df
                 data['giorni_dilazione_fornitori'] = giorni_dilazione_fornitori
+                return giorni_dilazione_fornitori
             else:
                 print("Error: totale_valore_produzione tag, in giorni_dilazione_fornitori_ratio, not found or has no value")
-    return giorni_dilazione_fornitori
+    
 
-# Calculate ROI
-def calculate_ROI(data):
-    if 'totale_attivo_circolante' in data and data['totale_attivo_circolante'] != 0:
-        ROI_ratios = {}
-        for context_ref in data['totale_attivo_circolante']:
-            if 'EBIT' in data and context_ref in data['EBIT']\
-                    and 'totale_attivo_circolante' in data and context_ref in data['totale_attivo_circolante'] :
-                r_o_i = (float(data['EBIT'][context_ref]) / 
-                        float(data['totale_attivo_circolante'][context_ref]))
-                ROI_ratios[context_ref] = r_o_i 
-        data['ROI_ratios'] = ROI_ratios 
-    else:
-        print("Error: totale_attivo_circolante tag, in calculate_ROI, not found or has no value")
 # Interest  = C29 / C19  = Interest and financial expenses / totale debiti
 def calculate_interest_ratios(data):
     if 'totale_debiti' in data and data['totale_debiti'] != 0:
@@ -206,22 +210,24 @@ def differenziale_interessi_ratios(data):
                         data['totale_attivo_circolante'][context_ref]) - data['interessi_passivi'][context_ref] )
                 differenziale_interessi_ratios[context_ref] = differenziale_interessi_formula 
         data['differenziale_interessi_ratios'] = differenziale_interessi_ratios 
+        return differenziale_interessi_ratios
     else:
         print("Error: totale_attivo_circolante tag, in differenziale_interessi_ratios, not found or has no value")
 
 # ROE = C27/C13 = UtilePerditaEsercizio / TotalePatrimonioNetto
 def calculate_ROE(data):
     if 'patrimonio_netto' in data and data['patrimonio_netto'] != 0:
-        ROE_ratios = {}
+        ROE_ratio = {}
         for context_ref in data['patrimonio_netto']:
             if 'utile_perdita' in data and context_ref in data['utile_perdita']\
                     and 'patrimonio_netto' in data and context_ref in data['patrimonio_netto'] :
-                r_o_e=  (data['utile_perdita'][context_ref] / 
-                        data['patrimonio_netto'][context_ref])
-                ROE_ratios[context_ref] = r_o_e 
-        data['ROE_ratios'] = ROE_ratios 
+                r_o_e=  (float(data['utile_perdita'][context_ref] )/ float(data['patrimonio_netto'][context_ref]))
+                ROE_ratio[context_ref] = r_o_e 
+        data['ROE_ratio'] = ROE_ratio 
+        return ROE_ratio
     else:
         print("Error: TotalePatrimonioNetto tag, in ROE, not found or has no value")
+
 # Turnover magazzino = C15 / C31 = totale valore produzione / inventories 
 def calculate_turnover_magazzino(data):
     if 'rimanenze' in data and data['rimanenze'] != 0:
@@ -233,8 +239,10 @@ def calculate_turnover_magazzino(data):
                         data['rimanenze'][context_ref])
                 turnover_magazzino_ratios[context_ref] = turnover_magazzino_formula 
         data['turnover_magazzino_ratios'] = turnover_magazzino_ratios 
+        return turnover_magazzino_ratios
     else:
         print("Error: Rimanenze tag, in Turnover magazzino, not found or has no value")
+
 # Giacenza del magazzino = (C31 / C15) * 365 = (Inventories / Totale valore produzione ) * 365
 def calculate_giacenza_magazzino(data):
     if 'totale_valore_produzione' in data and data['totale_valore_produzione'] != 0:
@@ -242,10 +250,10 @@ def calculate_giacenza_magazzino(data):
         for context_ref in data['rimanenze']:
             if 'rimanenze' in data and context_ref in data['rimanenze']\
                     and 'rimanenze' in data and context_ref in data['rimanenze'] :
-                giacenza_magazzino_formula =  (data['utile_perdita'][context_ref] / 
-                        data['rimanenze'][context_ref])* 365
+                giacenza_magazzino_formula =  (float(data['rimanenze'][context_ref] )/ float(data['totale_valore_produzione'][context_ref]))* 365
                 giacenza_magazzino_ratios[context_ref] = giacenza_magazzino_formula 
         data['giacenza_magazzino_ratios'] = giacenza_magazzino_ratios 
+        return giacenza_magazzino_ratios
     else:
         print("Error: totale_valore_produzione tag, in calculate_giacenza_magazzino, not found or has no value")
 
@@ -279,8 +287,7 @@ def differenziale_dilazioni_ratio(data, giorni_dilazione_fornitori, giorni_dilaz
         differenziale_dilazioni_formula = second_pair_fornitori[1] - second_pair_clienti[1]
         differenziale_dil[context_ref] = differenziale_dilazioni_formula
         data['differenziale_dilazioni'] = differenziale_dil 
-        #print(data['differenziale_dilazioni'], "data['differenziale_dilazioni']")    # {'i_31-12-2005': -786700.0, 'i_31-12-2004': -786700.0}     ! ErrOr here !
-    return differenziale_dil[context_ref]                                            # ERROR IN THE OUTPUT. context ref repeated twice, should only print 2004
+    return differenziale_dil[context_ref]                                           
 
 # Calculate Financial Laverage C24/C13  Total Assets / Shareholder's Equity
 def financial_laverage(data):
@@ -307,6 +314,13 @@ AZ_score_Not_manufactruing(data)
 financial_laverage(data)
 AZ_score_M = AZ_score_manufactruing(data)
 fin_lev = financial_laverage(data)
+calculate_giacenza_magazzino(data)
+calculate_ROE(data)
+calculate_acid_test(data)
+calculate_current_ratios(data)
+
+
+
 
 main_data = data
 
@@ -315,6 +329,8 @@ def return_result():
     result = "\n <br>".join([f"{key} ({context_ref}): {value}"
                         for key, values in data.items()
                         for context_ref, value in values.items()])
-                        
+    print(result)                      
     return result
+
+
 
